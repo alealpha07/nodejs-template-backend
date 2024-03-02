@@ -66,17 +66,74 @@ The database used for this template contains only a `Users` table with the follo
 | Password   | TEXT         | User's password     |
 | ImageUrl   | TEXT         | URL of user's image |
 
-### Backend example api
-An example API endpoint is provided under `/api/user` with the following routes:
-- `GET /`: Retrieves a list of all users.
-- `POST /`: Updates the image URL for a user.
-- `PATCH /`: Updates the password for a user.
+### API Documentation
+#### Authentication
 
-### Backend Authentication
-The authentication is managed at the following routes:
-- `POST /login`: (password: string, username: string) Logs the user in
-- `POST /register`: (password: string, confirmPassword: string, username: string) Registers a user
-- `GET /user`: Gets current user (useful to check if user is logged in)
+##### Login
+
+- **URL**: `/login`
+- **Method**: `POST`
+- **Body**:
+  - `username`: User's username.
+  - `password`: User's password.
+- **Success Response**: A session cookie is set upon successful login.
+- **Error Response**: `401` with an error message if authentication fails.
+
+##### Register
+
+- **URL**: `/register`
+- **Method**: `POST`
+- **Body**:
+  - `username`: Desired username.
+  - `password`: Desired password.
+  - `confirmPassword`: Confirmation of the password.
+- **Success Response**: `200` with message "User Created successfully".
+- **Error Response**: `422` if user already exists or passwords do not match.
+
+#### User Endpoints
+
+##### Get User Information
+
+- **URL**: `/user`
+- **Method**: `GET`
+- **Authentication Required**: Yes
+- **Success Response**: `200` with user information.
+- **Error Response**: `401` if user is not authenticated.
+
+##### Logout
+
+- **URL**: `/logout`
+- **Method**: `POST`
+- **Success Response**: `200` with message "logged out".
+
+##### User Image Update
+
+- **URL**: `/api/user`
+- **Method**: `POST`
+- **Body**:
+  - `image`: New image URL.
+  - `id`: User's ID.
+- **Authentication Required**: Yes
+- **Success Response**: `200` with message "Image Updated Successfully".
+- **Error Response**: `401` if not authenticated, `422` if required fields are missing.
+
+##### User Password Update
+
+- **URL**: `/api/user`
+- **Method**: `PATCH`
+- **Body**:
+  - `password`: New password.
+  - `confirmPassword`: Confirmation of the new password.
+  - `id`: User's ID.
+- **Authentication Required**: Yes
+- **Success Response**: `200` with message "User Password Updated successfully".
+- **Error Response**: `401` if not authenticated, `422` if passwords do not match or required fields are missing.
+
+#### Error Codes
+
+- `401` - Unauthorized: Authentication is required and has failed or has not yet been provided.
+- `422` - Unprocessable Entity: The request was well-formed but was unable to be followed due to semantic errors.
+
 
 ---
 
